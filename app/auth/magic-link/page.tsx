@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {Suspense} from 'react'
 import {redirect } from 'next/navigation'
 import {transporter} from '@/lib/email'
 import { createVerificationToken } from '@/lib/auth'
@@ -71,7 +71,10 @@ function Login() {
                  >
                  Send Magic Link
                  </button>
-                <StatusBanner/>
+                 <Suspense fallback={<p>Loading...</p>}>
+                    <StatusBanner/>
+                 </Suspense>
+
             </form>
 
     </div>
