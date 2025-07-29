@@ -19,6 +19,7 @@ model User{
   email String @unique
   createdAt DateTime @default(now())
   session Session[]
+  tasks Task[]
 }
 
 model VerificationToken{
@@ -35,4 +36,21 @@ model Session {
   user User @relation(fields: [userId], references: [id])
   expires DateTime
   createdAt DateTime @default(now())
+}
+
+model Task {
+  id String @id @default(uuid())
+  name String
+  description String?
+  deadline DateTime?
+  status Status @default(Due)
+  sendNotification Boolean @default(false)
+  userId String
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+}
+
+enum Status {
+  Completed
+  Due
 }
