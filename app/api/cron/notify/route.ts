@@ -8,6 +8,11 @@ import timezone from 'dayjs/plugin/timezone';
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
+// This tells Vercel to run this every minute
+export const config = {
+  schedule: '* * * * *', // every minute
+};
+
 export async function GET() {
   try {
     const nowUtc = dayjs().utc();
