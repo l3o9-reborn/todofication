@@ -16,6 +16,7 @@ export const config = {
 export async function GET() {
   try {
     const nowUtc = dayjs().utc();
+    console.log(nowUtc);
 
     // Fetch all users with notification enabled and their settings & due tasks
     const users = await prisma.user.findMany({
