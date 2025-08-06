@@ -7,7 +7,7 @@ import timezone from 'dayjs/plugin/timezone';
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
-// This tells Vercel to run this every minute
+// Run every minute on Vercel
 export const config = {
   schedule: '* * * * *', // every minute
 };
@@ -15,38 +15,43 @@ export const config = {
 export async function GET() {
   try {
     const nowUtc = dayjs().utc();
+    let totalDeleted = 0;
 
-    // Fetch users with auto-clean enabled
+    // Fetch users with auto-delete enabled
     const settings = await prisma.settings.findMany({
       where: {
         ae: true,
+        at: { not: null },
       },
     });
 
-    let totalDeleted = 0;
-
-    // Iterate over each user's settings
     for (const s of settings) {
       const tz = s.timezone || 'UTC';
 
-      // Current time in user's timezone
-      const nowLocal = nowUtc.tz(tz).format('HH:mm');
+      // Format user's scheduled time and current time to 'HH:mm'
+      const userDeleteTime = dayjs(`2000-01-01T${s.at}`).format('HH:mm');
+      const nowLocalTime = nowUtc.tz(tz).format('HH:mm');
 
-      // Only proceed if current time matches user's preferred delete time
-      if (nowLocal === s.at) {
+      if (nowLocalTime === userDeleteTime) {
         const deleted = await prisma.task.deleteMany({
           where: {
             userId: s.userId,
-            deadline: { lt: new Date() }, // past deadline
+            deadline: { lt: nowUtc.toDate() }, // past deadline compared in UTC
           },
         });
         totalDeleted += deleted.count;
       }
     }
 
-    return NextResponse.json({ message: 'Old tasks deleted', count: totalDeleted });
+    return NextResponse.json({
+      message: 'Old tasks deleted successfully',
+      count: totalDeleted,
+    });
   } catch (error) {
-    console.error(error);
-    return NextResponse.json({ error: 'Failed to delete tasks' }, { status: 500 });
+    console.error('Task auto-clean error:', error);
+    return NextResponse.json(
+      { error: 'Failed to auto-delete tasks' },
+      { status: 500 }
+    );
   }
 }

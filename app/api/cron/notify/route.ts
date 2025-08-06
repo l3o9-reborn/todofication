@@ -18,6 +18,8 @@ export async function GET() {
     const nowUtc = dayjs().utc();
     console.log(nowUtc);
 
+    console.log(nowUtc)
+
     // Fetch all users with notification enabled and their settings & due tasks
     const users = await prisma.user.findMany({
       where: {
@@ -41,11 +43,11 @@ export async function GET() {
       // Get user's timezone or fallback to UTC
       const tz = user.settings?.timezone || 'UTC';
 
-      // Current time in user's timezone formatted as HH:mm
-      const nowLocal = nowUtc.tz(tz).format('HH:mm');
+        const nowLocal = nowUtc.tz(tz).format('HH:mm');
+        const preferredTime = dayjs(`2000-01-01T${user.settings?.nt}`).format('HH:mm');
 
-      // Check if current local time matches user preferred notification time
-      if (nowLocal === user.settings?.nt) {
+        if (nowLocal === preferredTime)
+        {
         const taskList = user.tasks.map(t => `- ${t.name}`).join('\n');
         const message = `Here are your due tasks:\n\n${taskList}`;
 
