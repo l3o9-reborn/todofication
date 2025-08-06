@@ -21,7 +21,6 @@ export async function GET() {
     const settings = await prisma.settings.findMany({
       where: {
         ae: true,
-        at: { not: null },
       },
     });
 
