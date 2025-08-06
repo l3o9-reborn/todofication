@@ -27,12 +27,12 @@ export async function GET() {
     for (const s of settings) {
       const tz = s.timezone || 'UTC';
 
-      // Format user's scheduled time and current time to 'HH:mm'
-      const userDeleteTime = dayjs(`2000-01-01T${s.at}`).format('HH:mm');
-      const nowLocalTime = nowUtc.tz(tz).format('HH:mm');
+        const nowLocal = nowUtc.tz(tz);
+        const scheduledTime = dayjs.tz(`2000-01-01T${s.at}`, tz);
 
-      if (nowLocalTime === userDeleteTime) {
-        const deleted = await prisma.task.deleteMany({
+        // Check if nowLocal is between scheduledTime and scheduledTime + 1 min
+        if (nowLocal.isSame(scheduledTime) || (nowLocal.isAfter(scheduledTime) && nowLocal.diff(scheduledTime, 'minute') < 1)){
+          const deleted = await prisma.task.deleteMany({
           where: {
             userId: s.userId,
             deadline: { lt: nowUtc.toDate() }, // past deadline compared in UTC

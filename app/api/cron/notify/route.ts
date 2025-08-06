@@ -43,10 +43,14 @@ export async function GET() {
       // Get user's timezone or fallback to UTC
       const tz = user.settings?.timezone || 'UTC';
 
-        const nowLocal = nowUtc.tz(tz).format('HH:mm');
-        const preferredTime = dayjs(`2000-01-01T${user.settings?.nt}`).format('HH:mm');
+        const nowLocal = nowUtc.tz(tz);
+        const preferredTime = dayjs(`2000-01-01T${user.settings?.nt}`);
 
-        if (nowLocal === preferredTime)
+        // Check if nowLocal is between preferredTime (inclusive) and preferredTime + 1 min (exclusive)
+        if (
+          nowLocal.isSame(preferredTime) ||
+          (nowLocal.isAfter(preferredTime) && nowLocal.diff(preferredTime, 'minute') < 1)
+        )
         {
         const taskList = user.tasks.map(t => `- ${t.name}`).join('\n');
         const message = `Here are your due tasks:\n\n${taskList}`;
