@@ -1,0 +1,12 @@
+{
+  "cron": [
+    {
+      "path": "/api/cron/notify",
+      "schedule": "* * * * *"
+    },
+    {
+      "path": "/api/cron/delete",
+      "schedule": "* * * * *"
+    }
+  ]
+}

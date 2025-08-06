@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "Settings" ALTER COLUMN "at" SET DEFAULT '12:00',
+ALTER COLUMN "nt" SET DEFAULT '08:00';

@@ -53,7 +53,7 @@ import { toast } from 'sonner'
   }
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center z-50 bg-black/30 backdrop-blur-sm">
+    <div className="fixed inset-0 flex items-center justify-center z-90 bg-black/30 backdrop-blur-sm">
       <div className="relative bg-white p-5 rounded-md shadow-md shadow-cyan-900 w-[90%] md:w-[50%] max-w-[500px] text-cyan-900">
         <button onClick={onClose}>
           <span className="absolute top-3 right-3 font-bold text-xl cursor-pointer">×</span>
@@ -89,7 +89,7 @@ import { toast } from 'sonner'
             type="datetime-local"
             value={task.deadline ? task.deadline.slice(0, 16) : ''}
             onChange={handleChange}
-            className="w-full border-2 border-cyan-900 rounded-md h-10 p-2"
+            className="w-full border-2  border-cyan-900 rounded-md h-10 p-2"
           />
         </div>
 
@@ -99,14 +99,14 @@ import { toast } from 'sonner'
             name="sendNotification"
             checked={task.sendNotification}
             onChange={handleChange}
-            className="accent-cyan-900 w-5 h-5"
+            className="accent-cyan-900 cursor-pointer w-5 h-5"
           />
           <label className="pl-3">Send Notification</label>
         </div>
 
         <button
           onClick={handleSubmit}
-          className="w-full py-2 px-4 bg-cyan-900 text-white rounded-md hover:bg-cyan-800 transition-colors duration-300"
+          className="w-full py-2 cursor-pointer px-4 bg-cyan-900 text-white rounded-md hover:bg-cyan-800 transition-colors duration-300"
         >
           Add Task
         </button>

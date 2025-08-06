@@ -36,13 +36,13 @@ function Task({EachTask, onTaskChange}: {EachTask: TaskData, onTaskChange: ()=> 
             if (!res.ok) {
                 throw new Error('Failed to update task')
             }
-                  toast.success('Task submitted successfully!') // or alert('Success')
-                  setIsModalOpen(false)
+            toast.success('Task submitted successfully!') // or alert('Success')
+            setIsModalOpen(false)
             
         } catch (error) {
             const err = error as Error
-                  toast.error(`Error submitting task: ${err.message}`) // or alert(err.message)
-                  console.error(err)
+            toast.error(`Error submitting task: ${err.message}`) // or alert(err.message)
+            console.error(err)
         }
 
     }
@@ -103,12 +103,12 @@ function Task({EachTask, onTaskChange}: {EachTask: TaskData, onTaskChange: ()=> 
                     <DeadlineCountdown deadline={task.deadline} />
                 </div>
 
-                <div className="flex gap-2 bg-gray-200 p-1 rounded-full w-max">
+                <div className="flex gap-2  bg-gray-200 p-1 rounded-full w-max">
                 {(['Completed', 'Due'] as const).map((option) => (
                     <button
                     key={option}
                      onClick={() => handleStatusChange(option)}
-                    className={`px-4 py-1 rounded-full transition-all duration-300 ${
+                    className={`px-4 py-1 rounded-full cursor-pointer transition-all duration-300 ${
                         selected === option
                         ? 'bg-cyan-900 text-gray-200 shadow'
                         : 'bg-gray-200 text-cyan-900'

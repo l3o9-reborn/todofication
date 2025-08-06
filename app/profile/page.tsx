@@ -1,14 +1,15 @@
-import React from 'react'
+'use client'
+import SideBar from '@/components/SideBar'
+import ProfileSection from '@/components/profile/ProfileSection'
+import ReportsSection from '@/components/profile/ReportsSection'
 
-function page() {
+export default function ProfilePage() {
+
   return (
-    <div className='h-screen flex items-center justify-center flex-col text-cyan-900 md:text-4xl gap-20'> 
-
-        <div>Profile Is Currently In maintenance</div>
-
-        <div>Sorry! for Interruption</div>
-    </div>
+   <div className=''>
+     <ProfileSection/>
+     <ReportsSection/>
+    <SideBar onTaskChange={()=>(console.log('task Changed'))}/>
+   </div>
   )
 }
-
-export default page

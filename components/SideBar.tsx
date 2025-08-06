@@ -12,17 +12,17 @@ function SideBar({onTaskChange}:{onTaskChange: ()=> void}) {
   const Elements = [
     {
       name: 'Home',
-      icon: <Home className='h-6 w-6' />,
+      icon: <Home  className=' h-6 w-6 text-amber-600'/>,
       href: '/'
     },
     {
       name: 'Add Task',
-      icon: <Plus className='h-6 w-6' />,
+      icon: <Plus className='h-6 w-6 text-amber-600' />,
       onClick: () => setIsModalOpen(true)
     },
     {
       name: 'User',
-      icon: <UserCog className='h-6 w-6' />,
+      icon: <UserCog className='h-6 w-6 text-amber-600' />,
       href: '/profile'
     }
   ]
@@ -54,21 +54,22 @@ function SideBar({onTaskChange}:{onTaskChange: ()=> void}) {
 
   return (
     <>
-      <div className='fixed bottom-10 left-[5%] md:left-[25%] rounded-full h-15 md:w-[50%] w-[90%] bg-gray-50 shadow-lg shadow-cyan-900 z-99'>
-        <div className='flex justify-around items-center h-full w-full'>
+      <div className='fixed  bottom-5 md:bottom-10 left-[5%] md:left-[25%] h-[5%] md:w-[50%] xl:w-[30%] xl:left-[35%] w-[90%] shadow-2xl bg-cyan-900 border-b-10 border-amber-600 shadow-amber-600 rounded-full   z-99'>
+        <div className='flex text-gray-50   justify-around items-center h-full w-full'>
           {Elements.map((element) =>
             element.href ? (
               <Link key={element.name} href={element.href}>
-                <div className='text-cyan-900 hover:text-cyan-800 hover:scale-120 transition-all duration-300 flex flex-col items-center justify-center'>
+                <div className=' hover:scale-150 hover:text-white  transition-all duration-300 flex flex-col items-center justify-center'>
                   {element.icon}
-                  <span className='text-xs'>{element.name}</span>
+                  <span className='  inline-block text-xs'>{element.name}</span>
+                
                 </div>
               </Link>
             ) : (
               <button
                 key={element.name}
                 onClick={element.onClick}
-                className='text-cyan-900 cursor-pointer hover:text-cyan-800 hover:scale-120 transition-all duration-300 flex flex-col items-center justify-center'
+                className=' hover:text-white cursor-pointer  hover:scale-150 transition-all duration-300 flex flex-col items-center justify-center'
               >
                 {element.icon}
                 <span className='text-xs'>{element.name}</span>
@@ -76,6 +77,9 @@ function SideBar({onTaskChange}:{onTaskChange: ()=> void}) {
             )
           )}
         </div>
+        {/* <div className='w-full h-1 rounded-2xl bg-amber-600'>
+
+        </div> */}
       </div>
 
       {isModalOpen && (
