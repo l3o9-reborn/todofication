@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer
 } from 'recharts';
+import { toast } from 'sonner';
 
 // Define the structure for a single day's report data
 interface DailyReportData {
@@ -68,6 +69,7 @@ const ReportsSection: React.FC = () => {
         const e = err as Error
         setError(e.message || "Failed to fetch daily report data.");
         console.error("Error fetching daily report:", e);
+        toast.error('Error Fetching Report ')
       } finally {
         setLoading(false);
       }

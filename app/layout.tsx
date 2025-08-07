@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import TopNav from "@/components/TopNav";
+import { Toaster } from 'sonner'
 
 
 const geistSans = Geist({
@@ -30,8 +31,9 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-white `}
       >
           <TopNav/>
-          <div className="pt-12 md:pt-16">
+          <div className="pt-16">
           {children}
+           <Toaster position="bottom-right" />
         </div>
       </body>
     </html>

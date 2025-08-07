@@ -89,21 +89,23 @@ function Task({EachTask, onTaskChange}: {EachTask: TaskData, onTaskChange: ()=> 
     }
 
   return (
-    <div className='relative'>
+   <div className='relative'>
             <div className={'relative flex flex-col md:flex-row gap-2 text-cyan-900 mx-[4%] my-[4%] md:mx-[4%] md:my-[4px] items-center justify-around md:justify-between  rounded-md px-10  bg-white shadow-md shadow-cyan-900 p-5 ' + (open ? 'min-h-[350px] md:min-h-[200px]' : 'min-h-[250px] md:min-h-[20px]')}>
-                <div className='md:w-[60%]'>{task.name}</div>
-                {
+                <div className='w-35 overflow-hidden'>{task.name}</div>
+                <div className='min-w-80'>
+                    {
                     open && (
-                        <div className='md:w-[50%]'>
+                        <div className=' text-center'>
                             {task.description || 'No description provided'}
                         </div>
                     )
                 }
-                <div>
+                </div>
+                <div className='w-50'>
                     <DeadlineCountdown deadline={task.deadline} />
                 </div>
 
-                <div className="flex gap-2  bg-gray-200 p-1 rounded-full w-max">
+                <div className="flex gap-2  bg-gray-200 p-1 rounded-full  ">
                 {(['Completed', 'Due'] as const).map((option) => (
                     <button
                     key={option}

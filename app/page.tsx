@@ -47,11 +47,13 @@ const filteredTasks = tasks.filter(task => {
       <SearchBar selected={selected} setSelected={setSelected} search={search} setSearch={setSearch}/>
   
       <SideBar onTaskChange={fetchTasks}/>
-      {
+        {
         filteredTasks.map((task) => (
           <Task key={task.id} EachTask={task} onTaskChange={fetchTasks}/>
-        ))
-      }
+          ))
+        }
+        <div className="h-20"></div>
+
     </div>
   );
 }

@@ -29,7 +29,7 @@ function TopNav() {
   return (
     <div
     ref={settingsRef}
-    className='fixed max-w-[1400px] z-44 min-w-screen h-12 md:h-16 bg-gray-100 text-cyan-900 flex items-center justify-between 2xl:justify-center 2xl:gap-220 shadow-2xl shadow-amber-600 px-2 md:px-10'>
+    className='fixed max-w-[1400px] z-44 min-w-screen h-16 bg-gray-100 text-cyan-900 flex items-center justify-between 2xl:justify-center 2xl:gap-220 shadow-2xl shadow-amber-600 px-2 md:px-10'>
       <div>
         <h1 className='font-bold md:text-2xl'>TODOFICATION</h1>
       </div>
@@ -49,7 +49,7 @@ function TopNav() {
       {showSettings && (
         <div
           
-          className='fixed top-12 md:top-16 left-0 md:left-auto md:right-0 z-42'
+          className='fixed top-16 left-0 md:left-auto md:right-0 z-42'
         >
           <SettingsBar  setShowSettings={ setShowSettings}/>
         </div>

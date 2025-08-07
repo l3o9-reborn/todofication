@@ -50,8 +50,10 @@ const updateSettings = async () => {
       body: JSON.stringify({ ...settings }),
     });
     if (!res.ok) console.log('Update Settings Failed');
+    toast.success('Successfully Updated Settings')
   } catch (error) {
     console.log('Error Updating Settings', error);
+    toast.error('Error Updating Settings')
   }
 }
 
@@ -66,6 +68,7 @@ const fetchSettings = async () => {
     });
   } catch (error) {
     console.log('Error Fetching Settings', error);
+    toast.error('Error Fetching Settings')
   }
 };
 

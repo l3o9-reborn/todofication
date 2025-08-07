@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import { Camera, Edit } from "lucide-react"
 import EditProfile from "./EditProfile"
+import {toast} from 'sonner'
 export interface ProfileInterface{
   profileImage: string
   coverImage:string
@@ -83,10 +84,12 @@ const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
       if(!res.ok) throw new Error('Failed to update profile')
       
       const updatedData = await res.json()
-      console.log('Profile updated successfully:', updatedData)
+      console.log('updated Data', updatedData)
+      toast.success('Profile updated successfully')
     } catch (err) {
       const error = err as Error
       console.error('Error updating profile:', error)
+      toast.error('Error updating profile')
     } 
   }
 
@@ -106,6 +109,7 @@ const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     } catch (err) {
       const error = err as Error
       console.error('Error fetching profile:', error)
+      toast.error('Error fetching profile')
     }
   }
 

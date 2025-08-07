@@ -47,8 +47,16 @@ import { toast } from 'sonner'
     return
     }
 
-    console.log('Task submitted:', task)
-    onSubmit(task)
+    //convert local deadline to UTC
+
+    const utcDate = new Date(task.deadline).toISOString()
+  
+
+    const taskWithUTC:TaskData ={
+      ...task,
+      deadline: utcDate,
+    }
+    onSubmit(taskWithUTC)
     onClose() // optionally close after submit
   }
 
@@ -93,7 +101,7 @@ import { toast } from 'sonner'
           />
         </div>
 
-        <div className="flex items-center mb-4">
+        {/* <div className="flex items-center mb-4">
           <input
             type="checkbox"
             name="sendNotification"
@@ -102,13 +110,13 @@ import { toast } from 'sonner'
             className="accent-cyan-900 cursor-pointer w-5 h-5"
           />
           <label className="pl-3">Send Notification</label>
-        </div>
+        </div> */}
 
         <button
           onClick={handleSubmit}
           className="w-full py-2 cursor-pointer px-4 bg-cyan-900 text-white rounded-md hover:bg-cyan-800 transition-colors duration-300"
         >
-          Add Task
+          {initialTask? 'Update task': 'Add Task'}
         </button>
       </div>
     </div>
