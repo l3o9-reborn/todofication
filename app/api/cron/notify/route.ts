@@ -23,6 +23,7 @@ interface DebugInfoEntry {
 }
 
 export async function GET() {
+  console.log('[CRON] /api/cron/notify executed at:', new Date().toISOString());
   try {
     const nowUtc = dayjs().utc();
     const debugInfo: DebugInfoEntry[] = [];

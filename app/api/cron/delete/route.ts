@@ -22,6 +22,7 @@ export const config = {
 };
 
 export async function GET() {
+  console.log('[CRON] /api/cron/delete executed at:', new Date().toISOString());
   try {
     const nowUtc = dayjs().utc();
     let totalDeleted = 0;
