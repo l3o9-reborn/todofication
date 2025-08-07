@@ -4,6 +4,15 @@ import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
 
+interface DebugInfoEntry {
+  userId: string;
+  timezone: string;
+  localHour: number;
+  localMinute: number;
+  preferredHour: number;
+  preferredMinute: number;
+}
+
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
@@ -24,14 +33,30 @@ export async function GET() {
       },
     });
 
+    const debugInfo: DebugInfoEntry[] = [] = []
+
     for (const s of settings) {
       const tz = s.timezone || 'UTC';
 
         const nowLocal = nowUtc.tz(tz);
-        const scheduledTime = dayjs.tz(`2000-01-01T${s.at}`, tz);
+        if (!s?.nt) continue;
+        const [hour, minute] = s?.nt.split(':').map(Number)
+
+      debugInfo.push({
+        userId: s.userId,
+        timezone: tz,
+        localHour: nowLocal.hour(),
+        localMinute: nowLocal.minute(),
+        preferredHour: hour,
+        preferredMinute: minute,
+      })
+
 
         // Check if nowLocal is between scheduledTime and scheduledTime + 1 min
-        if (nowLocal.isSame(scheduledTime) || (nowLocal.isAfter(scheduledTime) && nowLocal.diff(scheduledTime, 'minute') < 1)){
+        if (
+        nowLocal.hour() === hour &&
+        nowLocal.minute() === minute  
+        ){
           const deleted = await prisma.task.deleteMany({
           where: {
             userId: s.userId,
@@ -42,10 +67,7 @@ export async function GET() {
       }
     }
 
-    return NextResponse.json({
-      message: 'Old tasks deleted successfully',
-      count: totalDeleted,
-    });
+  return NextResponse.json({ status: 'Delete Processed', debugInfo, totalDeleted })
   } catch (error) {
     console.error('Task auto-clean error:', error);
     return NextResponse.json(

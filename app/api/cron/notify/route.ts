@@ -8,19 +8,25 @@ import timezone from 'dayjs/plugin/timezone';
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
-// This tells Vercel to run this every minute
 export const config = {
   schedule: '* * * * *', // every minute
 };
 
+interface DebugInfoEntry {
+  user: string;
+  timezone: string;
+  localHour: number;
+  localMinute: number;
+  preferredHour: number;
+  preferredMinute: number;
+  tasksCount: number;
+}
+
 export async function GET() {
   try {
     const nowUtc = dayjs().utc();
-    console.log(nowUtc);
+    const debugInfo: DebugInfoEntry[] = [];
 
-    console.log(nowUtc)
-
-    // Fetch all users with notification enabled and their settings & due tasks
     const users = await prisma.user.findMany({
       where: {
         settings: {
@@ -38,20 +44,37 @@ export async function GET() {
     });
 
     for (const user of users) {
-      if (!user.email || user.tasks.length === 0) continue;
+      if (!user.email || user.tasks.length === 0){
+        console.log(user.email, user.tasks.length);
+        continue;
+      }
+        
 
-      // Get user's timezone or fallback to UTC
       const tz = user.settings?.timezone || 'UTC';
+      const nowLocal = nowUtc.tz(tz);
 
-        const nowLocal = nowUtc.tz(tz);
-        const preferredTime = dayjs(`2000-01-01T${user.settings?.nt}`);
+      if (!user.settings?.nt) {
+        console.log(`Skipping ${user.email} - No notification time`);
+        continue;
+      }
+      console.log('everything working')
 
-        // Check if nowLocal is between preferredTime (inclusive) and preferredTime + 1 min (exclusive)
-        if (
-          nowLocal.isSame(preferredTime) ||
-          (nowLocal.isAfter(preferredTime) && nowLocal.diff(preferredTime, 'minute') < 1)
-        )
-        {
+      const [hour, minute] = user.settings.nt.split(':').map(Number);
+
+      debugInfo.push({
+        user: user.email,
+        timezone: tz,
+        localHour: nowLocal.hour(),
+        localMinute: nowLocal.minute(),
+        preferredHour: hour,
+        preferredMinute: minute,
+        tasksCount: user.tasks.length,
+      });
+
+      if (
+        nowLocal.hour() === hour &&
+        nowLocal.minute() === minute
+      ) {
         const taskList = user.tasks.map(t => `- ${t.name}`).join('\n');
         const message = `Here are your due tasks:\n\n${taskList}`;
 
@@ -63,7 +86,7 @@ export async function GET() {
       }
     }
 
-    return NextResponse.json({ message: 'Notifications sent' });
+    return NextResponse.json({ status: 'Notifications processed', debugInfo });
   } catch (error) {
     console.error(error);
     return NextResponse.json({ error: 'Failed to send notifications' }, { status: 500 });
