@@ -1,4 +1,3 @@
-import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
@@ -21,7 +20,13 @@ export const config = {
   schedule: '* * * * *', // every minute
 };
 
-export async function GET() {
+export async function GET(request: Request) {
+
+  const auth = request.headers.get('Authorization');
+  if (auth !== `Bearer ${process.env.CRON_SECRET}`) {
+    return new Response('Unauthorized', { status: 401 });
+  }
+
   console.log('[CRON] /api/cron/delete executed at:', new Date().toISOString());
   try {
     const nowUtc = dayjs().utc();
@@ -68,12 +73,15 @@ export async function GET() {
       }
     }
 
-  return NextResponse.json({ status: 'Delete Processed', debugInfo, totalDeleted })
+  return new Response(
+      JSON.stringify({ status: 'Delete Processed', debugInfo, totalDeleted }),
+      { status: 200, headers: { 'Content-Type': 'application/json' } }
+    );
   } catch (error) {
     console.error('Task auto-clean error:', error);
-    return NextResponse.json(
-      { error: 'Failed to auto-delete tasks' },
-      { status: 500 }
+    return new Response(
+      JSON.stringify({ error: 'Failed to auto-delete tasks' }),
+      { status: 500, headers: { 'Content-Type': 'application/json' } }
     );
   }
 }

@@ -1,4 +1,3 @@
-import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { sendEmail } from '@/lib/mailer';
 import dayjs from 'dayjs';
@@ -22,7 +21,13 @@ interface DebugInfoEntry {
   tasksCount: number;
 }
 
-export async function GET() {
+export async function GET(request:Request) {
+
+   const auth = request.headers.get('Authorization');
+  if (auth !== `Bearer ${process.env.CRON_SECRET}`) {
+    return new Response('Unauthorized', { status: 401 });
+  }
+
   console.log('[CRON] /api/cron/notify executed at:', new Date().toISOString());
   try {
     const nowUtc = dayjs().utc();
@@ -87,9 +92,16 @@ export async function GET() {
       }
     }
 
-    return NextResponse.json({ status: 'Notifications processed', debugInfo });
+   return new Response(
+      JSON.stringify({ status: 'Notifications processed', debugInfo }),
+      { status: 200, headers: { 'Content-Type': 'application/json' } }
+    )
   } catch (error) {
-    console.error(error);
-    return NextResponse.json({ error: 'Failed to send notifications' }, { status: 500 });
+       console.error(error);
+    return new Response(
+      JSON.stringify({ error: 'Failed to send notifications' }),
+      { status: 500, headers: { 'Content-Type': 'application/json' } }
+    );
+
   }
 }
