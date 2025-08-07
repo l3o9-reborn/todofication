@@ -7,20 +7,15 @@ import { toast } from 'sonner';
 
 interface SettingsInterface {
   ne: boolean;  // notification email
-  nt: string;   // notification time
   ae: boolean;  // automation enable
-  at: string;   // automation time
 }
 
 function SettingsBar({ setShowSettings }: { setShowSettings: React.Dispatch<React.SetStateAction<boolean>> }) {
   const [dynamicWidth, setDynamicWidth] = useState('0px');
-  const [timezone, setTimezone]=useState('UTC')
   const router = useRouter();
   const [settings, setSettings] = useState<SettingsInterface>({
     ne: false,
-    nt: '08:00',
     ae: false,
-    at: '12:00'
   });
 
   useEffect(() => {
@@ -52,7 +47,7 @@ const updateSettings = async () => {
     const res = await fetch('api/settings', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ...settings, timezone }),
+      body: JSON.stringify({ ...settings }),
     });
     if (!res.ok) console.log('Update Settings Failed');
   } catch (error) {
@@ -67,21 +62,16 @@ const fetchSettings = async () => {
     const data = await res.json();
     setSettings({
       ne: data.ne ?? false,
-      nt: data.nt ?? '08:00',
       ae: data.ae ?? false,
-      at: data.at ?? '12:00',
     });
-    setTimezone(data.timezone ?? 'UTC');
   } catch (error) {
     console.log('Error Fetching Settings', error);
   }
 };
+
   useEffect(()=>{
     fetchSettings()
-    const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    setTimezone(tz);
   },[])
-
 
 
 
@@ -132,22 +122,13 @@ const fetchSettings = async () => {
             />
           </button>
         </div>
-        <div>
-          <label className="block mt-2 text-sm">Preferred Time</label>
-          <input
-            value={settings.nt}
-            onChange={e => setSettings(prev => ({ ...prev, nt: e.target.value }))}
-            type="time"
-            className="h-10 w-55 border-2 p-2 border-amber-600 rounded-md bg-cyan-950 text-white"
-          />
-        </div>
       </div>
 
       {/* Automation Settings */}
       <div>
         <h1 className="font-semibold">Automate Task Cleaning Settings</h1>
         <div className="flex items-center justify-between w-50 mt-5">
-          <div>Delete Due Tasks</div>
+          <div >Delete Dead Tasks</div>
           <button
             onClick={() => setSettings(prev => ({ ...prev, ae: !prev.ae }))}
             className={`relative cursor-pointer w-8 h-4 rounded-full transition-colors duration-300 ${
@@ -160,15 +141,6 @@ const fetchSettings = async () => {
               }`}
             />
           </button>
-        </div>
-        <div>
-          <label className="block mt-2 text-sm">Preferred Time</label>
-          <input
-            value={settings.at}
-            onChange={e => setSettings(prev => ({ ...prev, at: e.target.value }))}
-            type="time"
-             className="h-10 w-55 border-2 p-2 border-amber-600 rounded-md bg-cyan-950 text-white"
-          />
         </div>
       </div>
       <button 

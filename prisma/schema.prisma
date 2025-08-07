@@ -63,10 +63,7 @@ enum Status {
 model Settings{
   id String @id @default(uuid())
   ae Boolean @default(false)
-  at String @default("12:00")
   ne Boolean @default(false)
-  nt String @default("08:00")
-  timezone String @default("UTC")
   userId String @unique
   user User @relation("userSettings", fields: [userId], references: [id])
 }

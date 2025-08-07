@@ -1,86 +1,57 @@
 import { prisma } from '@/lib/prisma';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
-import timezone from 'dayjs/plugin/timezone';
-
-interface DebugInfoEntry {
-  userId: string;
-  timezone: string;
-  localHour: number;
-  localMinute: number;
-  preferredHour: number;
-  preferredMinute: number;
-}
 
 dayjs.extend(utc);
-dayjs.extend(timezone);
 
-// Run every minute on Vercel
 export const config = {
-  schedule: '* * * * *', // every minute
+  runtime: 'edge',          // Edge runtime required for Vercel cron jobs
 };
 
 export async function GET(request: Request) {
-
   const auth = request.headers.get('Authorization');
   if (auth !== `Bearer ${process.env.CRON_SECRET}`) {
     return new Response('Unauthorized', { status: 401 });
   }
 
   console.log('[CRON] /api/cron/delete executed at:', new Date().toISOString());
+
   try {
     const nowUtc = dayjs().utc();
     let totalDeleted = 0;
 
-    // Fetch users with auto-delete enabled
     const settings = await prisma.settings.findMany({
-      where: {
-        ae: true,
-      },
+      where: { ae: true },
     });
 
-    const debugInfo: DebugInfoEntry[] = [] = []
+    const debugInfo = [];
 
     for (const s of settings) {
-      const tz = s.timezone || 'UTC';
 
-        const nowLocal = nowUtc.tz(tz);
-        if (!s?.nt) continue;
-        const [hour, minute] = s?.nt.split(':').map(Number)
+
+      const deleted = await prisma.task.deleteMany({
+        where: {
+          userId: s.userId,
+          deadline: { lt: nowUtc.toDate() }, // compare using UTC
+        },
+      });
 
       debugInfo.push({
         userId: s.userId,
-        timezone: tz,
-        localHour: nowLocal.hour(),
-        localMinute: nowLocal.minute(),
-        preferredHour: hour,
-        preferredMinute: minute,
-      })
+        deletedCount: deleted.count,
+      });
 
-
-        // Check if nowLocal is between scheduledTime and scheduledTime + 1 min
-        if (
-        nowLocal.hour() === hour &&
-        nowLocal.minute() === minute  
-        ){
-          const deleted = await prisma.task.deleteMany({
-          where: {
-            userId: s.userId,
-            deadline: { lt: nowUtc.toDate() }, // past deadline compared in UTC
-          },
-        });
-        totalDeleted += deleted.count;
-      }
+      totalDeleted += deleted.count;
     }
 
-  return new Response(
-      JSON.stringify({ status: 'Delete Processed', debugInfo, totalDeleted }),
+    return new Response(
+      JSON.stringify({ status: 'Success', totalDeleted, debugInfo }),
       { status: 200, headers: { 'Content-Type': 'application/json' } }
     );
   } catch (error) {
-    console.error('Task auto-clean error:', error);
+    console.error('Cron delete error:', error);
     return new Response(
-      JSON.stringify({ error: 'Failed to auto-delete tasks' }),
+      JSON.stringify({ error: 'Internal Server Error' }),
       { status: 500, headers: { 'Content-Type': 'application/json' } }
     );
   }
