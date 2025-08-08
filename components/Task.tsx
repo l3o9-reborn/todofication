@@ -90,22 +90,28 @@ function Task({EachTask, onTaskChange}: {EachTask: TaskData, onTaskChange: ()=> 
 
   return (
    <div className='relative'>
-            <div className={'relative flex flex-col md:flex-row gap-2 text-cyan-900 mx-[4%] my-[4%] md:mx-[4%] md:my-[4px] items-center justify-around md:justify-between  rounded-md px-10  bg-white shadow-md shadow-cyan-900 p-5 ' + (open ? 'min-h-[350px] md:min-h-[200px]' : 'min-h-[250px] md:min-h-[20px]')}>
-                <div className='w-35 overflow-hidden'>{task.name}</div>
-                <div className='min-w-80'>
-                    {
-                    open && (
-                        <div className=' text-center'>
-                            {task.description || 'No description provided'}
-                        </div>
-                    )
-                }
+            <div className={'relative flex flex-col md:flex-row gap-2 text-cyan-900 mx-[4%] my-[4%] md:mx-[4%] md:my-[4px] items-center justify-between  rounded-md px-10  bg-white shadow-md shadow-cyan-900 p-5 ' + (open ? 'min-h-[350px] md:min-h-[200px]' : 'min-h-[250px] md:min-h-[20px]')}>
+                <div
+                    className={`
+                        w-full md:w-60 
+                        text-center md:text-left 
+                        overflow-x-auto md:overflow-x-auto  
+                        ${open ? 'whitespace-normal md:max-w-60' : 'md:whitespace-nowrap'} 
+                        [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]
+                    `}
+                    >
+                    {task.name}
                 </div>
-                <div className='w-50'>
-                    <DeadlineCountdown deadline={task.deadline} />
+                <div className="flex flex-col items-center justify-center flex-1 gap-5">
+                {open && (
+                    <div className="text-center">
+                    {task.description || 'No description provided'}
+                    </div>
+                )}
+                <DeadlineCountdown deadline={task.deadline} />
                 </div>
 
-                <div className="flex gap-2  bg-gray-200 p-1 rounded-full  ">
+                <div className="flex gap-2 items-center justify-end bg-gray-200 p-1 rounded-full md:ml-auto  ">
                 {(['Completed', 'Due'] as const).map((option) => (
                     <button
                     key={option}
@@ -162,7 +168,7 @@ function Task({EachTask, onTaskChange}: {EachTask: TaskData, onTaskChange: ()=> 
             <div>
                 <button
                     onClick={() => setOpen(!open)}
-                    className='absolute cursor-pointer bottom-0 left-[50%] shadow-2xl shadow-cyan-900'
+                    className='absolute cursor-pointer bottom-[-5px] left-[50%] shadow-2xl shadow-cyan-900'
                 >
                  {
                     open ? ( 

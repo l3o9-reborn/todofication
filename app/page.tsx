@@ -52,7 +52,7 @@ const filteredTasks = tasks.filter(task => {
           <Task key={task.id} EachTask={task} onTaskChange={fetchTasks}/>
           ))
         }
-        <div className="h-20"></div>
+        <div className="h-20 md:h-30"></div>
 
     </div>
   );

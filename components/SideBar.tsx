@@ -54,12 +54,12 @@ function SideBar({onTaskChange}:{onTaskChange: ()=> void}) {
 
   return (
     <>
-      <div className='fixed  bottom-5 md:bottom-10 left-[5%] md:left-[25%] h-[5%] md:w-[50%] xl:w-[30%] xl:left-[35%] w-[90%] shadow-2xl bg-cyan-900 border-b-10 border-amber-600 shadow-amber-600 rounded-full   z-99'>
+      <div className='fixed  bottom-5 md:bottom-10 left-[5%] md:left-[25%] h-13 md:w-[50%] xl:w-[30%] xl:left-[35%] w-[90%]  shadow-2xl bg-cyan-900 border-b-5 border-amber-600 shadow-amber-600 rounded-full   z-99'>
         <div className='flex text-gray-50   justify-around items-center h-full w-full'>
           {Elements.map((element) =>
             element.href ? (
               <Link key={element.name} href={element.href}>
-                <div className=' hover:scale-150 hover:text-white  transition-all duration-300 flex flex-col items-center justify-center'>
+                <div className=' hover:scale-125 hover:text-white  transition-all duration-300 flex flex-col items-center justify-center'>
                   {element.icon}
                   <span className='  inline-block text-xs'>{element.name}</span>
                 
@@ -69,7 +69,7 @@ function SideBar({onTaskChange}:{onTaskChange: ()=> void}) {
               <button
                 key={element.name}
                 onClick={element.onClick}
-                className=' hover:text-white cursor-pointer  hover:scale-150 transition-all duration-300 flex flex-col items-center justify-center'
+                className=' hover:text-white cursor-pointer  hover:scale-125 transition-all duration-300 flex flex-col items-center justify-center'
               >
                 {element.icon}
                 <span className='text-xs'>{element.name}</span>

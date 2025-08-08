@@ -111,7 +111,7 @@ const fetchSettings = async () => {
       <div>
         <h1 className="font-semibold">Notification Settings</h1>
         <div className="flex items-center justify-between w-50 mt-5">
-          <div>Email Summary</div>
+          <div>Due Alert</div>
           <button
             onClick={() => setSettings(prev => ({ ...prev, ne: !prev.ne }))}
             className={`relative cursor-pointer w-8 h-4 rounded-full transition-colors duration-300 ${
